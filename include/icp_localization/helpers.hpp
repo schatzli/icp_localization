@@ -11,6 +11,7 @@
 #include <Eigen/Dense>
 #include "icp_localization/common/typedefs.hpp"
 #include <geometry_msgs/Pose.h>
+#include <geometry_msgs/TransformStamped.h>
 #include "pointmatcher_ros/transform.h"
 #include <memory>
 

@@ -58,6 +58,7 @@ class ICPlocalization
   ros::NodeHandle nh_;
   ros::Publisher registeredCloudPublisher_;
   ros::Publisher posePub_;
+  ros::Publisher transPub_;
   ros::Subscriber initialPose_;
   PM::ICPSequence icp_;
   PM::DataPointsFilters inputFilters_;

@@ -91,6 +91,7 @@ void ICPlocalization::initializeInternal() {
 
 	registeredCloudPublisher_ = nh_.advertise<sensor_msgs::PointCloud2>("registered_cloud", 1, true);
 	posePub_ = nh_.advertise<geometry_msgs::PoseStamped>("range_sensor_pose", 1, true);
+	transPub_ = nh_.advertise<geometry_msgs::TransformStamped>("range_sensor_transform", 1, true);
 	icp_.setDefault();
 
 	// Initialite tf listener
@@ -262,6 +263,7 @@ void ICPlocalization::matchScans() {
 }
 
 void ICPlocalization::publishPose() const {
+	geometry_msgs::TransformStamped trans_msg;
 	geometry_msgs::PoseStamped pose_msg;
 	pose_msg.pose = pointmatcher_ros::eigenMatrixToPoseMsg<float>(optimizedPose_);
 	pose_msg.header.frame_id = fixedFrame_;
@@ -274,6 +276,22 @@ void ICPlocalization::publishPose() const {
 	} else {
 		tfPublisher_->publishMapToRangeSensor(optimizedPoseTimestamp_);
 	}
+
+	trans_msg.transform.translation.x = pose_msg.pose.position.x;
+	trans_msg.transform.translation.y = pose_msg.pose.position.y;
+	trans_msg.transform.translation.z = pose_msg.pose.position.z;
+
+	trans_msg.transform.rotation.w = pose_msg.pose.orientation.w;
+	trans_msg.transform.rotation.x = pose_msg.pose.orientation.x;
+	trans_msg.transform.rotation.y = pose_msg.pose.orientation.y;
+	trans_msg.transform.rotation.z = pose_msg.pose.orientation.z;
+
+	trans_msg.header.frame_id = fixedFrame_;
+	trans_msg.header.stamp = toRos(optimizedPoseTimestamp_);
+	trans_msg.header.seq = seq_++;
+
+	trans_msg.child_frame_id = "rslidar";
+	transPub_.publish(trans_msg);
 
 }
 

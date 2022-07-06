@@ -190,7 +190,7 @@ void ICPlocalization::initialize() {
 	std::cout << "ICPlocalization: Initialized \n";
 
 	// Set 2D pose subscribe
-	initialPose_ = nh_.subscribe("/initialpose", 1, &ICPlocalization::set2DPoseCallback, this);
+	initialPose_ = nh_.subscribe("/icp_pose", 1, &ICPlocalization::set2DPoseCallback, this);
 }
 
 DP ICPlocalization::fromPCL(const Pointcloud &pcl) {
